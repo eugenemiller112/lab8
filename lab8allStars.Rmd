@@ -1,0 +1,5 @@
+---
+title: "Lab 8, Team All Stars"
+author: "Johnny Tamanaha, Emily Archambault, Eugene Miller, Kaiyuan Fan, Jingzhi Zhang"
+output: html_document
+---
