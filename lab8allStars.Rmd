@@ -58,7 +58,7 @@ ggplot(data = rain) + geom_smooth(mapping = aes(x= Year, y = Rainfall, color = M
 ```
 
 # CRU and MAM Rainfall Data
-```{r}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 data <- read_excel("East Africa lake data.xlsx", sheet="CRU and MAM rainfall data")
 data <- data %>%
   select(-c("...6", "...7", "...8"))
