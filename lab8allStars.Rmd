@@ -20,11 +20,16 @@ How does the extent to which family's contribution to the overall happiness scor
 
 These questions are interesting because the answers could give a sense as to what factors are most important in people's lives, and how those factors could depend on where they live. It could give insight into how different countries are run, and provide lessons, either positive or negative, for the rest of the world.
 
+# Eugene Miller
 
+How does happiness score vary by region of the world? 
+Do the happiest countries have a low or high variance of individual scores for family, corruption, gdp per capita etc?
 
-
+These questions are important because they give us insight into why happy countries are happy in historical context, and to whether a high amount of one factor leads to happiness or whether a low variability between scores leads to a high amount of happiness. Is it better for a country to be strong in one specific asepct or be more well rounded when it comes to quality of life?
 
 ## Graphs for EA Lake Data
+
+# Biogenic Silica in Malawi Visualization
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(readxl)
