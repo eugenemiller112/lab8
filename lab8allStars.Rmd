@@ -33,3 +33,13 @@ ggplot(data) +
   labs(y = "BSi", x = "Year", title = "A Comparison Between Measurments in Biogenic Silica at Two Locations in Malawi")
 ```
 
+#VOI Rainfall Visualization
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(readxl)
+rain <- read_excel("East Africa lake data.xlsx", sheet = 8)
+rain <- select(rain, `Year`, `Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`)
+rain <- gather(rain, `Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Sep`, `Oct`, `Nov`, `Dec`, key = "Month", value = "Rainfall")
+
+ggplot(data = rain) + geom_smooth(mapping = aes(x= Year, y = Rainfall, color = Month), se = FALSE)
+```
