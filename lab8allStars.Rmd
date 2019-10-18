@@ -56,3 +56,27 @@ rain <- gather(rain, `Jan`, `Feb`, `Mar`, `Apr`, `May`, `Jun`, `Jul`, `Aug`, `Se
 
 ggplot(data = rain) + geom_smooth(mapping = aes(x= Year, y = Rainfall, color = Month), se = FALSE)
 ```
+
+# CRU and MAM Rainfall Data
+```{r}
+data <- read_excel("East Africa lake data.xlsx", sheet="CRU and MAM rainfall data")
+data <- data %>%
+  select(-c("...6", "...7", "...8"))
+data_MAM <- data %>%
+  gather("GPCC MAM Normalized", "CRU MAM Normalized", key="rainy Season", value="Global_Normalized_Rainfall") %>%
+  separate("rainy Season", into=c("Dataset", "rainy Season"), sep=" ") %>%
+  mutate("Rainy_Season" = "Short Rain") %>%
+  select("Year", "Dataset", "Rainy_Season", "Global_Normalized_Rainfall")
+data_OND <- data %>%
+  gather("GPCC OND Normalized", "CRU OND Normalized", key="rainy Season", value="Global_Normalized_Rainfall") %>%
+  separate("rainy Season", into=c("Dataset", "rainy Season"), sep=" ") %>%
+  mutate("Rainy_Season" = "Long Rain") %>%
+  select("Year", "Dataset", "Rainy_Season", "Global_Normalized_Rainfall")
+data2 <- rbind(data_MAM, data_OND)
+ggplot(data2) +
+  geom_point(mapping=aes(x=Year, y=Global_Normalized_Rainfall, color=Rainy_Season, shape=Dataset), size=3) +
+  geom_point(mapping=aes(x=Year, y=Global_Normalized_Rainfall, shape=Dataset), color="grey90", size=1.25) +
+  labs(title="Normalized Rainfall from 1901 to 2010")+
+  ylab("Global Normalized Rainfall") +
+  scale_color_discrete(name="Rainy Season")
+```
