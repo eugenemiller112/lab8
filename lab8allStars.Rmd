@@ -41,6 +41,14 @@ How does the extent to which life expectancy contributed to the calculation of t
 
 These questions are interesting because the answer could show that how do generosity and life expectancy in different countries influence people's happiness. This could give insight into how how to improve the national policy to improve the national happiness index.
 
+# Kaiyuan Fan 
+
+How does Dystopia Residual contribute to the calculation of happiness score for the different countries?
+
+What is the relationship between healthy and economy for different counties. 
+
+These questions are interesting because we can viually see how Dystopia Residual influence the citzens' happiness. Economy might influence the medical condition usually, which may influence the happiness and healthy of the citzens. We can check this by the questions.
+
 ## Graphs for EA Lake Data
 
 # Tanganyika Data
@@ -130,3 +138,23 @@ ggplot(data2) +
   ylab("Global Normalized Rainfall") +
   scale_color_discrete(name="Rainy Season")
 ```
+
+# Challa Data
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(readxl)
+
+cdata <- read_excel("East Africa lake data.xlsx", sheet = "Challa", skip = 1)
+
+cha <- cdata[-c(1),]
+new <- transmute(cha,year=`Age AD`, number=`varve number`, 
+thickness = as.double(`varve thickness`),dark.layer=as.double(`dark layer`), light.layer=as.double(`light layer`))
+challa <-new %>%
+  mutate('Fraction' = `dark.layer`/`light.layer`) 
+#Fraction means fraction of Dark Layer with Light Layer 
+
+ggplot(challa, aes(Fraction, thickness)) +
+  geom_smooth(method = lm, se = FALSE) +
+  labs(y ="Thickness", title = "Relationship between Fraction of Dark Layer with Light Layer and Thickness ")
+```
+
