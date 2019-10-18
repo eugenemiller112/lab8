@@ -6,9 +6,22 @@ output: html_document
 ## Prep for Lab 9
 Domain Expert: Sven Johannson (Economist at Stockholm School of Economics)
 
-Team Question: 
+Team Question: What factors appear to have the greatest influence on the Happiness Score of a country?
+This question is important because understanding the reasons behind what makes the people in some countries happier than others is the key to improving overall happiness for everyone. Finding what the common links are can guide how policies are developed, can shape our understanding of cultures around the world, and can give better insight into the biggest problems facing people today.
 
 Dataset Description: The United Nations World Happiness Report is a survey of the state of global happiness. The 2017 report ranks 155 countries by their happiness levels using the happiness scores and rankings use data from the Gallup World Poll. This report estimates the extend to which six variables contribute to happiness score: GDP per Capita, Family, Life Expectancy, Freedom, Generosity, Trust, Government Corruption. Adding these columns up gives happiness score.
+
+## Individual Sub Questions
+
+# Emily Archambault
+
+How does the extent to which the perception of corruption/trust in government's contribution to the overall happiness score vary by region of the world?
+How does the extent to which family's contribution to the overall happiness score vary by region of the world?
+
+These questions are interesting because the answers could give a sense as to what factors are most important in people's lives, and how those factors could depend on where they live. It could give insight into how different countries are run, and provide lessons, either positive or negative, for the rest of the world.
+
+
+
 
 
 ## Graphs for EA Lake Data
