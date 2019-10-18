@@ -3,3 +3,33 @@ title: "Lab 8, Team All Stars"
 author: "Johnny Tamanaha, Emily Archambault, Eugene Miller, Kaiyuan Fan, Jingzhi Zhang"
 output: html_document
 ---
+## Prep for Lab 9
+Domain Expert: Sven Johannson (Economist at Stockholm School of Economics)
+
+Team Question: 
+
+Dataset Description: The United Nations World Happiness Report is a survey of the state of global happiness. The 2017 report ranks 155 countries by their happiness levels using the happiness scores and rankings use data from the Gallup World Poll. This report estimates the extend to which six variables contribute to happiness score: GDP per Capita, Family, Life Expectancy, Freedom, Generosity, Trust, Government Corruption. Adding these columns up gives happiness score.
+
+
+## Graphs for EA Lake Data
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(readxl)
+
+data <- read_excel("East Africa lake data.xlsx", sheet = "Malawi", skip = 1)
+
+data <- data %>%
+  subset(select = -c(4,5,6,7))
+colnames(data)[1] <- "Years before 2002"
+colnames(data)[2] <- "Calandar Year"
+colnames(data)[3] <- "BSi (Location 1)"
+colnames(data)[4] <- "BSi (Location 2)"
+
+ggplot(data) +
+  geom_point(mapping = aes(x = `Calandar Year`, y = `BSi (Location 1)`), color = "indianred4") +
+  geom_point(mapping = aes(x = `Calandar Year`, y = `BSi (Location 2)`), color = "palegreen4") +
+  geom_smooth(mapping = aes(x = `Calandar Year`, y = `BSi (Location 1)`), color = "indianred3", se = FALSE) +
+  geom_smooth(mapping = aes(x = `Calandar Year`, y = `BSi (Location 2)` ),color = "palegreen3", se = FALSE) +
+  labs(y = "BSi", x = "Year", title = "A Comparison Between Measurments in Biogenic Silica at Two Locations in Malawi")
+```
+
