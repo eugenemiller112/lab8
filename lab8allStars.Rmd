@@ -27,6 +27,13 @@ Do the happiest countries have a low or high variance of individual scores for f
 
 These questions are important because they give us insight into why happy countries are happy in historical context, and to whether a high amount of one factor leads to happiness or whether a low variability between scores leads to a high amount of happiness. Is it better for a country to be strong in one specific asepct or be more well rounded when it comes to quality of life?
 
+# Johnny Tamanaha
+
+How does freedom affect happiness in each continent?
+How does freedom affect happiness in each region?
+
+These questions are interesting because freedom is such a defining characteristic or regions and countries. This could show evidence for an optimal level of freedom to maximize happiness for citizens. 
+
 ## Graphs for EA Lake Data
 
 # Biogenic Silica in Malawi Visualization
