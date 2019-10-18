@@ -34,6 +34,13 @@ How does freedom affect happiness in each region?
 
 These questions are interesting because freedom is such a defining characteristic or regions and countries. This could show evidence for an optimal level of freedom to maximize happiness for citizens. 
 
+# Jingzhi Zhang
+
+How does The extent to which generosity contributed to the calculation of the happiness score vary by the region of the world?
+How does the extent to which life expectancy contributed to the calculation of the happiness score vary by the region of the world?
+
+These questions are interesting because the answer could show that how do generosity and life expectancy in different countries influence people's happiness. This could give insight into how how to improve the national policy to improve the national happiness index.
+
 ## Graphs for EA Lake Data
 
 # Tanganyika Data
@@ -62,7 +69,9 @@ Tang.skinny <- gather(Tang,key="measurement",value="value",BSi, Charcoal,TEX86)
 Tang.skinny
 
 ggplot(data=Tang.skinny)+
-  geom_line(aes(x=year1,y=value,color = measurement))
+  geom_line(aes(x=year1,y=value,color = measurement))+
+  xlim(range(1250:2000))+
+  labs(y = "Proxies of Rainfall Variation", x = "Year", title = "A Comparison Between Measurments")
 ```
 
 # Biogenic Silica in Malawi Visualization
@@ -120,3 +129,4 @@ ggplot(data2) +
   labs(title="Normalized Rainfall from 1901 to 2010")+
   ylab("Global Normalized Rainfall") +
   scale_color_discrete(name="Rainy Season")
+```
