@@ -33,7 +33,7 @@ ggplot(data) +
   labs(y = "BSi", x = "Year", title = "A Comparison Between Measurments in Biogenic Silica at Two Locations in Malawi")
 ```
 
-#VOI Rainfall Visualization
+# VOI Rainfall Visualization
 ```{r, echo=FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(readxl)
