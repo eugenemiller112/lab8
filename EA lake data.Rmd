@@ -1,0 +1,212 @@
+---
+title: "Lake and Rainfall Data"
+author: "Eric Vance"
+date: "2019-10-07"
+output: html_document
+---
+
+```{r setup, include=FALSE,message=F}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+```
+
+##Team Application Exercises: Importing and Tidying Data
+Download the data file "East Africa lake data.xlsx" from OSF.
+
+These data come from a domain expert who visited LISA for statistical collaboration. This domain expert is a paleogeochemist who wants to improve the practices in her field regarding data collection, storage, sharing, and analysis. The current problem she wants to solve is: How do we make paleoclimate data more useful for scientists, environmental planners and policy makers, and app developers? The overall solution will include developing new best practices for data collection, reporting, archiving, and access. These questions are important because traditionally, paleo scientists spend lots of money collecting and analyzing one dataset, such as a core sample from a lake, publishing a paper about it, and then doing nothing else with the data. She wants to improve the practices in her field to enable secondary use of these expensive datasets to answer scientific questions, make policy decisions, and develop business applications. It's a waste of money, time, and effort for a dataset to be used only once.
+
+The problem is that the data are in different formats, so it's hard for any one person to reuse the datasets.
+
+Your team's goal for this application exercise is to import 4 (or 5) of the datasets into R, tidy them, share the tidy datasets with your team, and then create one meaningful plot visualizing the data over time.
+
+##Importing Data into R
+The file "East Africa lake data.xlsx" on OSF has nine tabs, each tab is a different dataset. 
+
+Each individual on the team should import one of the datasets. The first three datasets to use are VOI rainfall, Tanganyika, and Malawi. The next one (for four person teams) is Challa. The fifth one is CRU + MAM rainfall.
+
+The data are either amounts of rainfall collected in various ways or are physical or chemical properties of lake core samples. Each measurement of a lake core sample is a proxy for rainfall. In other words, paleogeochemists can reconstruct "annual" rainfall in the region surrounding the lake by calibrating the lake core measurements with known measurements of rainfall (VOI station rainfall data) or reconstructed satellite measurements (CRU + MAMM). Some of the data go back only 60 years. Some go back 20,000 years. 
+
+##Tidying Data in R
+Each individual should tidy their imported data. Then share your tidy data with your teammates.
+
+The first principle of tidy data is that each variable should be a column and every column should be a variable. So consider first, what are your variables? Then make those variables your columns.
+
+The second principle of tidy data is that each row should be an observation. Ask, what is being observed/recorded? Each observation should have its own row and every row should correspond to one observation.
+
+The third principle of tidy data is that each value must have its own cell (i.e., not a ratio like 3555/10983).
+
+The fourth principle of tidy data is to put each dataset into a tibble.
+
+If you do the first and fourth, then the second and third are automatically completed.
+
+##Visualizing Your Tidy Data
+Individually work on visualizing the 4 or 5 datasets. Discuss the visualizations a team. Take the best parts from individual plots and create a team visualization.
+
+Post your visualization on Padlet: padlet.com/erva2944/F19
+
+### 10-09-2019 importing
+Import each sheet one at a time.
+```{r}
+library(readxl)
+test <- read_excel("East Africa lake data.xlsx") #I think it imported just the first sheet.
+
+Challa <- read_excel("East Africa lake data.xlsx",sheet=1) #Read in correctly, but not tidy!
+
+
+
+```
+
+
+
+### Tidying CRU and MAM
+You can tidy "CRU and GPCC.csv" in many ways. One way is to use `gather()` then `separate()`.
+```{r}
+GPCC <- read_csv("Data/CRU and GPCC.csv")
+names(GPCC)
+GPCC.new <- gather(GPCC, `GPCC MAM Normalized`,`CRU MAM Normalized`,`GPCC OND Normalized`,`CRU OND Normalized`,key="type",value="rainfall")
+GPCC <- separate(GPCC.new,type,into=c("dataset","season"),sep=" ",extra="drop")
+```
+
+### Tidying Challa
+You can tidy "Challa.csv" in many ways. This dataset is already mostly tidy but there may be columns that are not variables and there are rows that are not observations. To tidy this dataset, specify the type of each column so that numerical columns are of `type_double()` rather than type character.
+```{r}
+Challa <- read_csv("East Africa Lake Data/Challa.csv") #using read_csv makes Challa a tibble
+Challa
+#If you have extraneous columns, get rid of them using select().
+# Get rid of the extraneous row using filter(). My import also imported many empty rows at the bottom of the dataset. So I will get rid of rows that have NA for Age AD
+Challa <- filter(Challa,!is.na(`Age AD`))
+#It's annoying to have to put tickmarks around the column names, so I will change them. We could use rename() like this:
+Challa.new <- rename(Challa,year=`Age AD`, number=`varve number`, 
+                     thickness=`varve thickness`,dark.layer=`dark layer`, 
+                     light.layer=`light layer`)
+
+# We we also need to change thickness, dark.layer, and light.layer into type_double() rather than character values.
+# Let's accomplish both things using mutate(), actually transmute() since we want to drop the old variables
+
+Challa <- transmute(Challa,year=`Age AD`, number=`varve number`, 
+                     thickness=as.double(`varve thickness`),dark.layer=as.double(`dark layer`), 
+                     light.layer=as.double(`light layer`))
+
+#Actually, the data still aren't tidy. The variables should be year, number (irrelevant), thickness, and type (total, dark, and light)
+
+
+```
+Alternatively, we could do almost everything above just using `read_csv()`.
+```{r}
+Challa2 <- read_csv("East Africa Lake Data/Challa.csv", col_names=c("year","number","thickness","dark.layer","light.layer"),
+                   col_types="iiddd")
+# We get warnings (but it's OK).
+problems(Challa2) #Nothing really to worry about.
+Challa2 <- filter(Challa2,!is.na(year))
+sum(Challa==Challa2) #What is the difference between Challa and Challa2?
+```
+
+### Tidying VOI rainfall
+This data is not tidy because not every variable has its own column. For this data we have only three variables: year, month, rainfall. We need to use `gather()` to tidy this dataset.
+```{r}
+VOI <- read_csv("Data/VOI rainfall station data.csv")
+VOI
+VOI <- gather(VOI,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec,key=month,value=rainfall)
+VOI #voila!
+```
+
+### Tidying Tanganyika
+```{r}
+Tang <- read_csv("Data/Tanganyika.csv")
+#Let's create three temporate tidy tibbles then joint them together to create one tidy tibble.
+# But first, what are our variables? We have year, BSi, Charcoal, and TEX86. Four variables.
+temp1 <- select(Tang,1:2)
+temp2 <- select(Tang,4:5)
+temp3 <- select(Tang,8:9)
+
+# Now we have to rename the variables in our three datasets to make them tidy. Instead let's select and rename at the same time.
+temp1 <- select(Tang,year=`Year AD`,BSi=`BSi (normalized)`)
+temp2 <- select(Tang,year=`Year AD_1`,charcoal=`Charcoal (normalized)`)
+temp3 <- select(Tang,year=Year,TEX86=TEX86)
+
+# We can recombine all three datasets using the left_join() function you'll read about (and do the exercises for) for Module 4.
+left_join(temp1,temp2) %>% left_join(temp3) # But wait! We're dropping years. Use full_join() instead.
+Tang.tidy <- full_join(temp1,temp2) %>% full_join(temp3) %>% arrange(desc(year))
+```
+
+
+### Tidying Tanganyika
+```{r}
+library(tidyverse)
+library(readxl)
+Tang <- read_excel("East Africa Lake Data.xlsx",sheet=6)
+
+Tang <- select(Tang, `Year AD...1`,`BSi (normalized)`,`Year AD...4`,`Charcoal (normalized)`,`Year`,TEX86)
+
+Tang <- rename(Tang,year1=`Year AD...1`,BSi=`BSi (normalized)`, year2=`Year AD...4`,Charcoal=`Charcoal (normalized)`,year3=`Year`)
+
+Tang1 <- Tang %>% select(year1,BSi)
+Tang2 <- Tang %>% select(year2,Charcoal)
+Tang3 <- Tang %>% select(year3,TEX86)
+
+Tang1$year1 <- round(Tang1$year1)
+Tang2$year2 <- round(Tang2$year2)
+Tang3$year3 <- round(Tang3$year3)
+
+Tang12 <- full_join(Tang1,Tang2,by=c("year1"="year2"))
+
+Tang <- full_join(Tang12,Tang3,by = c("year1"="year3"))
+
+Tang.skinny <- gather(Tang,key="measurement",value="value",BSi, Charcoal,TEX86)
+
+ggplot(data=Tang.skinny) +
+  geom_line(aes(x=year1,y=value,col=measurement))
+
+
+ggplot(data=filter(Tang.skinny,measurement=="TEX86")) +
+  geom_point(aes(x=year1,y=value,col=measurement)) +
+  geom_smooth(aes(x=year1,y=value,col=measurement))
+  #scale_x_continuous(limits=c(1900,2010))
+
+```
+
+
+
+### Tidying Malawi
+1. Download the .csv file into a folder that I know how to access.
+2. Open the file.
+3. Load it into R.
+```{r}
+malawi <- read_csv("East Africa Lake Data/Malawi.csv")
+```
+4. Tidy malawi data to make it useful.
+```{r}
+names(malawi)
+malawi <- filter(malawi,!is.na(`BSi MAR (mgSiO2/cm2y)_1`))
+malawi <- select(malawi,5:7)
+```
+4A. Getting rid of NA rows.
+4B. Select the useful columns
+4C. Rename the useful columns
+```{r}
+malawi <- transmute(malawi,ybp=`Age, cal ybp`,year=`Age (calender)_1`,bsi=`BSi MAR (mgSiO2/cm2y)_1`)
+```
+5. ybp is character. I want it to be a double.
+```{r}
+malawi$ybp <- parse_double(malawi$ybp)
+```
+
+Now Malawi is tidy!!!!!!!!
+
+### Tidying Naivasha
+2019-10-11
+
+Naivasha is already tidy, more or less. We might want to make Year an actual year not just a number. But beacuse some of the years are decimals, R doesn't like decimal years. Instead, let's get rid of the space in `Lake Depth` because having the space in the column name means we need to use the tick marks ``.
+```{r}
+Naivasha <- read_excel("East Africa Lake Data.xlsx", sheet=5)#col_types = cols(
+    Year = col_date(format="%Y")))
+
+Naivasha$Year <- parse_date(as.character(Naivasha$Year), format = "%Y")
+#Doesn't work because of the decimals in the years.
+
+Naivasha <- rename(Naivasha,LakeDepth=`Lake Depth`)
+```
+
+
+

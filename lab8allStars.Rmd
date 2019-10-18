@@ -29,6 +29,36 @@ These questions are important because they give us insight into why happy countr
 
 ## Graphs for EA Lake Data
 
+# Tanganyika Data
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(readxl)
+Tang <- read_excel("East Africa Lake Data.xlsx",sheet=6)
+
+Tang <- select(Tang, `Year AD...1`,`BSi (normalized)`,`Year AD...4`,`Charcoal (normalized)`,`Year`,TEX86)
+Tang <- rename(Tang,year1=`Year AD...1`,BSi=`BSi (normalized)`, year2=`Year AD...4`,Charcoal=`Charcoal (normalized)`,year3=`Year`)
+Tang_1 <- Tang %>%
+  select(year1,BSi)
+Tang_2 <- Tang %>%
+  select(year2, Charcoal)
+Tang_3 <- Tang %>%
+  select(year3, TEX86)
+
+Tang_1$year1 <- round(Tang_1$year1)
+Tang_2$year2 <- round(Tang_2$year2)
+Tang_3$year3 <- round(Tang_3$year3)
+
+Tang_1_2 <- full_join(Tang_1,Tang_2,by=c("year1"="year2"))
+
+Tang <- full_join(Tang_1_2,Tang_3,by=c("year1"="year3"))
+Tang.skinny <- gather(Tang,key="measurement",value="value",BSi, Charcoal,TEX86)
+Tang.skinny
+
+ggplot(data=Tang.skinny)+
+  geom_line(aes(x=year1,y=value,color = measurement))
+```
+
+
 # Biogenic Silica in Malawi Visualization
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(tidyverse)
